@@ -11,3 +11,6 @@ playwright-report/
 !.env.example
 *.log
 .agents/
+
+# Online deployment is built from source in GitHub Actions
+release/

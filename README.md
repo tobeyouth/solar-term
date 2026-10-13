@@ -4,7 +4,7 @@
 
 ## 直接使用
 
-双击 **`dist/index.html`** 即可打开。也可以将这一个文件复制到其他设备，或放在任意静态托管服务上。全部图片、样式、代码和内容均已内嵌，阅读和游玩不需要联网。站内的外部资料链接需要网络。
+双击 **`dist/index.html`** 即可打开。可以将这一个文件复制到其他设备；在线部署建议使用下述 `release/` 版本。全部图片、样式、代码和内容均已内嵌，阅读和游玩不需要联网。站内的外部资料链接需要网络。
 
 推荐使用当前版本 Chrome、Edge、Safari 或 Firefox。手机如果默认把 HTML 打开为文件预览，请选择浏览器打开；部分系统文件预览器不运行 JavaScript。
 
@@ -30,10 +30,10 @@
 2. 将 **Source** 设为 **GitHub Actions**。
 3. 打开 **Actions → Deploy GitHub Pages → Run workflow**，选择 `main` 运行。
 
-工作流直接发布已提交的 `dist/`，不需要 API Key、服务器或额外配置 Secrets。
-后续修改源码或素材后，先运行 `npm run build`，将更新后的 `dist/index.html` 一并提交到 `main`，即可自动部署。只提交源码不会更新线上成品。
+工作流从源码安装锁定依赖，运行 `npm run build:release` 并发布 `release/`，不需要 API Key、服务器或额外配置 Secrets。
+后续将源码、素材或构建配置的更新推送到 `main`，即可自动构建和部署。`release/` 是生成目录，不提交到 Git；需要同步离线成品时，另运行 `npm run build` 并提交 `dist/index.html`。
 
-仓库根目录的 `index.html` 是 Vite 开发入口，请勿选择从 `main` 根目录直接发布。部署工作流只上传 `dist/`，原始插画和开发文件不会进入 Pages 网站。
+仓库根目录的 `index.html` 是 Vite 开发入口，请勿选择从 `main` 根目录直接发布。部署工作流只上传 `release/`，原始插画和开发文件不会进入 Pages 网站。
 
 ## 本地开发
 
@@ -49,16 +49,23 @@ npm run dev
 Vite 仅用于开发预览。生产文件无服务器依赖。
 
 ```sh
-npm run build       # 构建 dist/index.html
-npm run check:dist  # 检查单文件与全部内嵌素材
-npm run preview    # 可选：通过 HTTP 预览构建产物
+npm run build            # 离线版：dist/index.html，全部内嵌，可双击打开
+npm run build:release    # 在线版：release/，独立图片、CSS 与 ESM 分块
+npm run build:all        # 同时更新两种产物
+npm run check:dist       # 检查离线单文件
+npm run check:release    # 检查在线体积、相对路径和独立资源
+npm run preview          # 通过 HTTP 预览离线版
+npm run preview:release  # 通过 HTTP 预览在线版
 ```
+
+在线版使用相对资源路径，可部署在 `/solar-term/` 等子路径。Vite 将应用、天文计算库和图标库拆为 ESM 分块，浏览器通过 modulepreload 并行加载；WebP 图片独立缓存，首屏只请求当前大图和可见头像，其余图片随浏览加载。在线版需要 HTTP 静态托管，不能像离线版一样直接用 `file://` 打开。
 
 ## 验证
 
 ```sh
 npm test           # 内容完整性、24 个交节日期、边界、拼图与存储容错
-npm run test:e2e   # 独立 Chrome，断网，以 file:// 打开真正的构建产物
+npm run build:all  # 浏览器回归前准备两种构建产物
+npm run test:e2e   # 独立 Chrome：离线 file:// 与在线 /solar-term/ 子路径
 ```
 
 浏览器测试使用本机安装的 Google Chrome，不读取个人浏览器配置。换为 Playwright 自带 Chromium 时，先安装其浏览器并移除 `playwright.config.js` 中的 `channel: 'chrome'`。测试会覆盖 24 个节气、答错重试、完整集章流程、页面刷新后的进度保留、明信片导出、搜索、资料弹窗、手机布局和键盘导航。
@@ -108,6 +115,7 @@ src/style.css           响应式视觉
 scripts/                素材处理与单文件产物检查
 tests/                  逻辑与浏览器回归测试
 dist/index.html         最终离线成品
+release/                在线部署产物（生成目录，不提交）
 ```
 
 运行时依赖为 Astronomy Engine（MIT）和 Lucide（ISC）；Vite、vite-plugin-singlefile、Sharp 与 Playwright 仅用于开发、打包和验证。

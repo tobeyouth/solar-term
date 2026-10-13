@@ -11,7 +11,11 @@
     "check:dist": "node scripts/check-dist.mjs",
     "assets": "node scripts/prepare-assets.mjs",
     "test:e2e": "playwright test",
-    "art:review": "node scripts/contact-sheet.mjs"
+    "art:review": "node scripts/contact-sheet.mjs",
+    "build:release": "vite build --mode release && node scripts/check-release.mjs",
+    "build:all": "npm run build && npm run build:release",
+    "preview:release": "vite preview --mode release --host 127.0.0.1",
+    "check:release": "node scripts/check-release.mjs"
   },
   "dependencies": {
     "astronomy-engine": "^2.1.19",

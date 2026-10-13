@@ -55,12 +55,12 @@ const icons = {
 };
 const imageModules = import.meta.glob('./assets/terms/*.webp', {
   eager: true,
-  query: '?inline',
+  query: '?url',
   import: 'default',
 });
 const avatars = import.meta.glob('./assets/avatars/*.webp', {
   eager: true,
-  query: '?inline',
+  query: '?url',
   import: 'default',
 });
 const image = (id) => imageModules[`./assets/terms/${id}.webp`] || '';
@@ -324,7 +324,7 @@ function switchTab(next) {
 
 function showSources() {
   lastFocus = document.activeElement;
-  modal.innerHTML = `<div class="modal-top"><div><span class="eyebrow">岁时 · 编者记</span><h2 id="modal-title">资料与创作</h2></div><button class="icon-button" data-action="close-modal" aria-label="关闭" title="关闭">${icon('X')}</button></div><p>二十四节气依太阳在黄道上的位置划分，每相隔 15° 为一个节气。文字参考以下公开资料重新编写，物候与习俗保留地域差异。</p><p>交节时刻由 Astronomy Engine 在本地计算，日期统一使用北京时间（UTC+8），按日展示；2026 年日期已与香港天文台年历核对。插画为 AI 辅助创作的时令意象，不代表所有地区的实景。</p><div class="source-list">${sources.map((s) => `<a href="${s.url}" target="_blank" rel="noopener noreferrer"><span><b>${s.title}</b><small>${s.note}</small></span>${icon('ArrowUpRight')}</a>`).join('')}</div><p class="small-note">阅读与游玩均可离线完成。外部资料链接需要网络。游玩记录保存在当前浏览器；移动 HTML 文件或更换浏览器后，记录可能不会随之迁移。</p>`;
+  modal.innerHTML = `<div class="modal-top"><div><span class="eyebrow">岁时 · 编者记</span><h2 id="modal-title">资料与创作</h2></div><button class="icon-button" data-action="close-modal" aria-label="关闭" title="关闭">${icon('X')}</button></div><p>二十四节气依太阳在黄道上的位置划分，每相隔 15° 为一个节气。文字参考以下公开资料重新编写，物候与习俗保留地域差异。</p><p>交节时刻由 Astronomy Engine 在本地计算，日期统一使用北京时间（UTC+8），按日展示；2026 年日期已与香港天文台年历核对。插画为 AI 辅助创作的时令意象，不代表所有地区的实景。</p><div class="source-list">${sources.map((s) => `<a href="${s.url}" target="_blank" rel="noopener noreferrer"><span><b>${s.title}</b><small>${s.note}</small></span>${icon('ArrowUpRight')}</a>`).join('')}</div><p class="small-note">下载单文件离线版后，阅读与游玩不需要网络。外部资料链接需要网络。游玩记录保存在当前浏览器；移动 HTML 文件或更换浏览器后，记录可能不会随之迁移。</p>`;
   refreshIcons();
   modal.showModal();
 }
