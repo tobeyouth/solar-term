@@ -20,6 +20,21 @@
 
 浏览器允许时，进度通过 `localStorage` 保留；限制本地文件存储的环境仍可正常游玩，只在本次会话保存。移动 HTML 文件、换浏览器或清理浏览器数据，可能丢失原有进度。
 
+## GitHub Pages 预览
+
+发布地址：<https://tobeyouth.github.io/solar-term/>（首次部署成功后生效）。
+
+首次启用：
+
+1. 打开仓库 **Settings → Pages → Build and deployment**。
+2. 将 **Source** 设为 **GitHub Actions**。
+3. 打开 **Actions → Deploy GitHub Pages → Run workflow**，选择 `main` 运行。
+
+工作流直接发布已提交的 `dist/`，不需要 API Key、服务器或额外配置 Secrets。
+后续修改源码或素材后，先运行 `npm run build`，将更新后的 `dist/index.html` 一并提交到 `main`，即可自动部署。只提交源码不会更新线上成品。
+
+仓库根目录的 `index.html` 是 Vite 开发入口，请勿选择从 `main` 根目录直接发布。部署工作流只上传 `dist/`，原始插画和开发文件不会进入 Pages 网站。
+
 ## 本地开发
 
 需要 Node.js 20.19+ 或 22.12+。
