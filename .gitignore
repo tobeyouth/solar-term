@@ -1,0 +1,13 @@
+node_modules/
+.DS_Store
+artifacts/
+test-results/
+playwright-report/
+
+# Local credentials and generated logs
+.npmrc
+.env
+.env.*
+!.env.example
+*.log
+.agents/
