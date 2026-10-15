@@ -25,11 +25,11 @@ for (const term of terms) {
 const sourceTranslations = [
   [
     'Hong Kong Observatory · The 24 Solar Terms',
-    'Solar longitude, term sequence and the astronomy of equinoxes and solstices.',
+    'How the Sun marks the 24 terms, equal days and nights, and the longest and shortest days.',
   ],
   [
     'China Agricultural Museum · The 24 Solar Terms',
-    'Term meanings, farming and seasonal observations.',
+    'What the terms mean, farm work and signs of the seasons.',
   ],
   [
     'China Meteorological Administration · Solar Terms and Weather',
@@ -37,18 +37,27 @@ const sourceTranslations = [
   ],
   [
     'China Intangible Cultural Heritage · Solar Terms and Customs',
-    'Seasonal festivals and regional traditions.',
+    'Festivals and customs in different places.',
   ],
   ['Hong Kong Observatory · 2026 Calendar', 'Reference for checking the 2026 solar-term dates.'],
-  ['China Meteorological Administration · Grain Rain', 'Spring rainfall and grain sowing.'],
+  ['China Meteorological Administration · Grain Rain', 'Spring rain and planting crops.'],
   [
     'China Meteorological News · Grain Full',
     'Filling wheat grains in the north and rising rivers in the south.',
   ],
-  ['Chinese Museums Association · Grain in Ear', 'Harvesting and sowing awned crops.'],
-  ['China Meteorological News · White Dew', 'Autumn coolness, dew and regional autumn rain.'],
-  ['China Meteorological News · Cold Dew', 'Late-autumn scenery and winter wheat sowing.'],
-  ['China Meteorological News · Frost’s Descent', 'Regional differences in first-frost dates.'],
+  [
+    'Chinese Museums Association · Grain in Ear',
+    'Gathering and planting crops such as wheat and rice.',
+  ],
+  [
+    'China Meteorological News · White Dew',
+    'Cool autumn weather, dew and rain in different places.',
+  ],
+  ['China Meteorological News · Cold Dew', 'Late-autumn views and planting winter wheat.'],
+  [
+    'China Meteorological News · Frost’s Descent',
+    'When the first frost comes in different places.',
+  ],
   [
     'China Meteorological News · Major Snow',
     'The difference between a solar term and actual snowfall.',
@@ -65,11 +74,14 @@ const sourceTranslations = [
     'China Intangible Cultural Heritage · Beginning of Summer',
     'Fresh foods, egg games and welcoming summer.',
   ],
-  ['China Meteorological News · End of Heat', 'Retreating heat and regional differences.'],
-  ['China Meteorological News · Minor Snow', 'Winter temperatures and changes in precipitation.'],
+  [
+    'China Meteorological News · End of Heat',
+    'Summer heat fading at different times in different places.',
+  ],
+  ['China Meteorological News · Minor Snow', 'Winter temperatures, rain and snow.'],
   [
     'China Meteorological News · Beginning of Autumn',
-    'Lingering heat and the custom of “biting into autumn”.',
+    'Late summer heat and eating watermelon to welcome autumn.',
   ],
   [
     'China Intangible Cultural Heritage · Spring Equinox',
@@ -79,10 +91,7 @@ const sourceTranslations = [
     'China Intangible Cultural Heritage · Major Heat',
     'Summer heat, thunderstorms and seasonal life.',
   ],
-  [
-    'China Intangible Cultural Heritage · Pure Brightness',
-    'Qingming weather and seasonal observations.',
-  ],
+  ['China Intangible Cultural Heritage · Pure Brightness', 'Qingming weather and signs of spring.'],
 ];
 sources.forEach((source, i) => {
   add(source.title, sourceTranslations[i][0]);
@@ -98,21 +107,21 @@ const ui = {
   漫游四季: 'Explore',
   节气图鉴: 'Solar Term Atlas',
   我的印记: 'My Seals',
-  '顺时而行，与自然相逢': 'Follow the seasons. Meet the natural world.',
+  '顺时而行，与自然相逢': 'Follow the seasons. Enjoy nature.',
   资料与创作: 'Sources & Credits',
   春生: 'Spring',
   夏长: 'Summer',
   秋收: 'Autumn',
   冬藏: 'Winter',
-  '风有信，花有期。': 'Breezes return, and flowers keep their promise.',
-  '听蝉鸣，看荷开。': 'Listen to cicadas. Watch the lotuses open.',
-  '山河晚，草木秋。': 'The hills grow quiet; the leaves turn to autumn.',
-  '候雪落，盼春归。': 'Await the snow, and the return of spring.',
+  '风有信，花有期。': 'Warm winds blow. Spring flowers open.',
+  '听蝉鸣，看荷开。': 'Hear summer insects. See lotus flowers.',
+  '山河晚，草木秋。': 'Quiet hills. Colourful autumn leaves.',
+  '候雪落，盼春归。': 'Wait for snow. Look forward to spring.',
   交节: 'Begins',
-  一岁一相逢: 'A yearly reunion',
+  一岁一相逢: 'Meet again each year',
   上一个节气: 'Previous solar term',
   下一个节气: 'Next solar term',
-  '四时 · 有序': 'The rhythm of four seasons',
+  '四时 · 有序': 'Four seasons, one year',
   '把日子，过成四季': 'Live with the seasons',
   选择季节: 'Choose a season',
   节气手札: 'Seasonal notes',
@@ -129,21 +138,21 @@ const ui = {
   太阳黄经: 'Solar longitude',
   通常在: 'Usually around',
   '交节日期按北京时间（UTC+8）计算。物候与习俗因地区而异。':
-    'Dates use Beijing time (UTC+8). Seasonal signs and customs vary by region.',
+    'Dates use Beijing time (UTC+8). Signs of the seasons and customs differ from place to place.',
   人间有味: 'Seasonal traditions',
-  今日小事: 'A small observation',
+  今日小事: 'Something to notice',
   '向自然，借一点闲': 'Take a moment with nature',
   赴一场节气小考: 'Try the seasonal quiz',
   '这份时令，你已读懂': 'You know this season well',
   '再与时令，熟悉一点': 'Get to know the season a little better',
   再答一次: 'Try again',
   去拼山河: 'Try the puzzle',
-  草木有问: 'Questions from nature',
+  草木有问: 'Nature quiz',
   '你知时节几许？': 'How well do you know the season?',
   答对了: 'Correct',
   查看结果: 'See results',
   下一题: 'Next question',
-  九片风景: 'Nine pieces of a landscape',
+  九片风景: 'Nine picture pieces',
   '山河，归于完整': 'The landscape is complete',
   拼一幅时节山河: 'Piece together the season',
   落子: 'Moves',
@@ -152,8 +161,8 @@ const ui = {
   查看完整原图: 'Show the full picture',
   拼山河已完成: 'Puzzle complete',
   选择两块交换位置: 'Select two tiles to swap',
-  '一岁光景 · 二十四相逢': 'A year of light · 24 encounters',
-  '顺着草木与山河，走过春夏秋冬。': 'Follow plants and landscapes through the four seasons.',
+  '一岁光景 · 二十四相逢': 'One year · 24 solar terms',
+  '顺着草木与山河，走过春夏秋冬。': 'Explore nature through all four seasons.',
   筛选季节: 'Filter by season',
   寻一个节气: 'Find a solar term',
   '搜索节气名称、物候或习俗': 'Search terms, seasonal signs or customs',
@@ -161,8 +170,8 @@ const ui = {
   查看全部节气: 'Show all solar terms',
   '走过山河 · 留下印记': 'Explore the seasons · Collect memories',
   我的岁时集: 'My Seasonal Collection',
-  '二十四番相逢，一整年的风景。': 'Twenty-four encounters. A whole year of landscapes.',
-  '与每一份时令，慢慢相识。': 'Get to know each season, one encounter at a time.',
+  '二十四番相逢，一整年的风景。': 'Twenty-four terms. A whole year of nature.',
+  '与每一份时令，慢慢相识。': 'Discover the seasons, one term at a time.',
   节气印记: 'Seasonal seals',
   已收集节气印记: 'Collected seasonal seals',
   已藏: 'Collected',
@@ -170,11 +179,11 @@ const ui = {
   '岁时 · 编者记': 'Suishi · Editor’s notes',
   关闭: 'Close',
   '二十四节气依太阳在黄道上的位置划分，每相隔 15° 为一个节气。文字参考以下公开资料重新编写，物候与习俗保留地域差异。':
-    'The 24 solar terms divide the Sun’s path into intervals of 15°. These texts were written using the public sources below and preserve regional differences in seasonal observations and customs.',
+    'The 24 solar terms follow the Sun’s position in the sky. Each term begins when the Sun moves another 15° along its yearly path. The texts use the sources below. Weather, plants and customs differ from place to place.',
   '交节时刻由 Astronomy Engine 在本地计算，日期统一使用北京时间（UTC+8），按日展示；2026 年日期已与香港天文台年历核对。插画为 AI 辅助创作的时令意象，不代表所有地区的实景。':
-    'Astronomy Engine calculates solar-term moments locally. Dates are shown by day in Beijing time (UTC+8); the 2026 dates were checked against the Hong Kong Observatory calendar. The AI-assisted illustrations evoke the seasons rather than document scenery in every region.',
+    'Astronomy Engine works out the dates on your device. We show dates in Beijing time (UTC+8). The 2026 dates were checked against the Hong Kong Observatory calendar. The pictures were made with AI to show the feel of each season. Real places may look different.',
   '下载单文件离线版后，阅读与游玩不需要网络。外部资料链接需要网络。游玩记录保存在当前浏览器；移动 HTML 文件或更换浏览器后，记录可能不会随之迁移。':
-    'The single-file offline edition works without a network connection. External source links need internet access. Progress is saved in this browser and may not follow you if you move the HTML file or change browsers.',
+    'Download the single HTML file to read and play without internet. You need internet to open source links. Your progress is saved in this browser. Moving the file or using another browser may leave that progress behind.',
   '此浏览器无法保存进度，本次游玩仍可继续。':
     'This browser cannot save progress. You can keep playing in this session.',
   '插画尚未载入。': 'The illustration has not loaded yet.',
@@ -242,30 +251,32 @@ export function translate(text, language = 'zh') {
 export const LANGUAGE_KEY = 'suishi.language.v1';
 export function createLanguageState(storage) {
   let global = 'zh';
-  let overrides = new Map();
+  let expanded = new Set();
   try {
     const saved = JSON.parse(storage?.getItem(LANGUAGE_KEY));
     if (saved?.global === 'zh' || saved?.global === 'en') {
       global = saved.global;
-      if (
+      if (Array.isArray(saved.expanded)) {
+        expanded = new Set(saved.expanded.filter((key) => typeof key === 'string'));
+      } else if (
         saved.overrides &&
         typeof saved.overrides === 'object' &&
         !Array.isArray(saved.overrides)
       ) {
-        overrides = new Map(
-          Object.entries(saved.overrides).filter(([, value]) => value === 'zh' || value === 'en'),
+        // Preserve existing preferences as open notes, without replacing the source text.
+        expanded = new Set(
+          Object.entries(saved.overrides)
+            .filter(([, value]) => (value === 'zh' || value === 'en') && value !== global)
+            .map(([key]) => key),
         );
       }
     }
   } catch {
-    /* Language switching remains available without storage. */
+    /* Translation notes remain available without storage. */
   }
   const save = () => {
     try {
-      storage?.setItem(
-        LANGUAGE_KEY,
-        JSON.stringify({ global, overrides: Object.fromEntries(overrides) }),
-      );
+      storage?.setItem(LANGUAGE_KEY, JSON.stringify({ global, expanded: [...expanded] }));
     } catch {
       /* Keep preferences in memory when storage is unavailable. */
     }
@@ -274,19 +285,18 @@ export function createLanguageState(storage) {
     get global() {
       return global;
     },
-    languageFor(key) {
-      return overrides.get(key) || global;
+    isTranslationVisible(key) {
+      return expanded.has(key);
     },
     setGlobal(language) {
       if (language !== 'zh' && language !== 'en') return;
       global = language;
-      overrides.clear();
+      expanded.clear();
       save();
     },
     toggle(key) {
-      const next = this.languageFor(key) === 'zh' ? 'en' : 'zh';
-      if (next === global) overrides.delete(key);
-      else overrides.set(key, next);
+      if (expanded.has(key)) expanded.delete(key);
+      else expanded.add(key);
       save();
     },
   };

@@ -2097,3 +2097,42 @@ html[lang='en'] .seal-season {
 html[lang='en'] .term-card {
   align-self: start;
 }
+
+/* Notes sit below the unchanged source text, including inside quiz choices. */
+.text-translation {
+  display: block;
+  margin-top: 9px;
+  padding-left: 11px;
+  border-left: 2px solid #d4ddcf;
+  color: #61715f;
+  font:
+    400 12px/1.75 system-ui,
+    sans-serif;
+  letter-spacing: normal;
+  text-align: left;
+  overflow-wrap: anywhere;
+}
+.text-translation[hidden] {
+  display: none;
+}
+.hero h1 .text-translation {
+  margin-top: 12px;
+  font-size: 14px;
+}
+.quiz-option-label {
+  min-width: 0;
+}
+.quiz-option-row:has(.text-translation:not([hidden])) {
+  align-items: flex-start;
+}
+.quiz-option-row:has(.text-translation:not([hidden])) > .text-language-toggle {
+  margin-top: 12px;
+}
+.text-language-toggle[aria-expanded='true'] {
+  background: #edf2e9;
+  border-color: #a7b89f;
+}
+
+.custom-block p .text-translation {
+  font-size: 11px;
+}

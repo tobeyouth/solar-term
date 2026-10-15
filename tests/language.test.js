@@ -31,18 +31,18 @@ test('all 24 terms and all 72 questions have complete English content', () => {
   }
 });
 
-test('local language overrides are independent; global selection unifies every block', () => {
+test('translation notes are independent; global selection closes open notes', () => {
   const state = createLanguageState();
   assert.equal(state.global, 'zh');
   state.toggle('lichun.description');
-  assert.equal(state.languageFor('lichun.description'), 'en');
-  assert.equal(state.languageFor('lichun.custom'), 'zh');
+  assert.equal(state.isTranslationVisible('lichun.description'), true);
+  assert.equal(state.isTranslationVisible('lichun.custom'), false);
   state.setGlobal('en');
   state.toggle('lichun.custom');
-  assert.equal(state.languageFor('lichun.description'), 'en');
-  assert.equal(state.languageFor('lichun.custom'), 'zh');
+  assert.equal(state.isTranslationVisible('lichun.description'), false);
+  assert.equal(state.isTranslationVisible('lichun.custom'), true);
   state.setGlobal('en');
-  assert.equal(state.languageFor('lichun.custom'), 'en');
+  assert.equal(state.isTranslationVisible('lichun.custom'), false);
 });
 
 test('language preferences persist and tolerate blocked or malformed storage', () => {
@@ -58,10 +58,10 @@ test('language preferences persist and tolerate blocked or malformed storage', (
   state.toggle('hanlu.description');
   const restored = createLanguageState(storage);
   assert.equal(restored.global, 'en');
-  assert.equal(restored.languageFor('hanlu.description'), 'zh');
+  assert.equal(restored.isTranslationVisible('hanlu.description'), true);
   for (const malformed of ['oops', 'null', '[]', '{"global":"fr","overrides":{"a":"bad"}}']) {
     value = malformed;
-    assert.equal(createLanguageState(storage).languageFor('a'), 'zh');
+    assert.equal(createLanguageState(storage).isTranslationVisible('a'), false);
   }
   const blocked = createLanguageState({
     getItem() {
@@ -73,5 +73,16 @@ test('language preferences persist and tolerate blocked or malformed storage', (
   });
   blocked.setGlobal('en');
   blocked.toggle('a');
-  assert.equal(blocked.languageFor('a'), 'zh');
+  assert.equal(blocked.isTranslationVisible('a'), true);
+});
+
+test('old local language choices become open translation notes', () => {
+  const state = createLanguageState({
+    getItem: () => JSON.stringify({ global: 'en', overrides: { description: 'zh', custom: 'en' } }),
+  });
+  assert.equal(state.global, 'en');
+  assert.equal(state.isTranslationVisible('description'), true);
+  assert.equal(state.isTranslationVisible('custom'), false);
+  state.toggle('description');
+  assert.equal(state.isTranslationVisible('description'), false);
 });

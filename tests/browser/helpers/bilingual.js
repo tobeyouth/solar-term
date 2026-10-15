@@ -5,7 +5,7 @@ import { englishTerms } from '../../../src/data.en.js';
 async function untranslatedText(page) {
   return page.evaluate(() => {
     const ignored =
-      '.brand-seal, .vertical-seal, .outline-seal, .stamp, .result-seal, .small-number, .language-switch, .text-language-toggle, script, style, svg';
+      '.brand-seal, .vertical-seal, .outline-seal, .stamp, .result-seal, .small-number, .language-switch, .text-language-toggle, .text-translation, script, style, svg';
     const walker = document.createTreeWalker(document.body, NodeFilter.SHOW_TEXT);
     const found = [];
     while (walker.nextNode()) {
@@ -25,17 +25,49 @@ export async function checkBilingual(page, url) {
   await page.goto(`${url}#lichun`);
   const description = page.locator('.description');
   await description.locator('.text-language-toggle').click();
-  await expect(description).toHaveText(englishTerms.lichun.description);
+  await expect(description).toContainText(terms[0].description);
+  await expect(description.locator('.text-translation')).toHaveText(
+    englishTerms.lichun.description,
+  );
+  await expect(description.locator('.text-translation')).toBeVisible();
+  const noteLayout = await description.evaluate((element) => {
+    const note = element.querySelector('.text-translation');
+    const source = document.createRange();
+    source.selectNodeContents(element.firstChild);
+    return {
+      belowSource: note.getBoundingClientRect().top >= source.getBoundingClientRect().bottom,
+      smaller:
+        parseFloat(getComputedStyle(note).fontSize) <
+        parseFloat(getComputedStyle(element).fontSize),
+      language: note.lang,
+    };
+  });
+  expect(noteLayout).toEqual({ belowSource: true, smaller: true, language: 'en' });
   await expect(page.locator('.custom-block p').first()).toHaveText(terms[0].customDescription);
   await expect(page.locator('html')).toHaveAttribute('lang', 'zh-CN');
   await page.reload();
-  await expect(description).toHaveText(englishTerms.lichun.description);
+  await expect(description).toContainText(terms[0].description);
+  await expect(description.locator('.text-translation')).toHaveText(
+    englishTerms.lichun.description,
+  );
   await page.getByRole('button', { name: 'English', exact: true }).click();
   await expect(page.locator('html')).toHaveAttribute('lang', 'en');
   await expect(page.locator('h1')).toHaveText(englishTerms.lichun.name);
   await description.locator('.text-language-toggle').focus();
   await page.keyboard.press('Enter');
-  await expect(description).toHaveText(terms[0].description);
+  await expect(description).toContainText(englishTerms.lichun.description);
+  await expect(description.locator('.text-translation')).toHaveText(terms[0].description);
+  await expect(description.locator('.text-language-toggle')).toHaveAttribute(
+    'aria-expanded',
+    'true',
+  );
+  await description.locator('.text-language-toggle').click();
+  await expect(description.locator('.text-translation')).toBeHidden();
+  await expect(description).toHaveText(englishTerms.lichun.description);
+  await expect(description.locator('.text-language-toggle')).toHaveAttribute(
+    'aria-expanded',
+    'false',
+  );
   await expect(page.locator('.custom-block p').first()).toHaveText(
     englishTerms.lichun.customDescription,
   );
@@ -45,17 +77,28 @@ export async function checkBilingual(page, url) {
   await page.locator('[data-tab="quiz"]').first().click();
   const firstOption = page.locator('.quiz-option-row').first();
   await firstOption.locator('.text-language-toggle').click();
-  await expect(firstOption.locator('.quiz-option-label')).toHaveText(
+  await expect(firstOption.locator('.quiz-option-label')).toContainText(
+    englishTerms.lichun.questions[0].options[0],
+  );
+  await expect(firstOption.locator('.text-translation')).toHaveText(
     terms[0].questions[0].options[0],
   );
   await expect(firstOption.locator('.quiz-option')).toBeEnabled();
   await page.locator('[data-answer="1"]').click();
-  await expect(firstOption.locator('.quiz-option-label')).toHaveText(
+  await expect(firstOption.locator('.quiz-option-label')).toContainText(
+    englishTerms.lichun.questions[0].options[0],
+  );
+  await expect(firstOption.locator('.text-translation')).toHaveText(
     terms[0].questions[0].options[0],
   );
   await expect(page.locator('.answer-feedback')).toContainText('Correct');
   await page.locator('.answer-feedback p .text-language-toggle').click();
-  await expect(page.locator('.answer-feedback p')).toHaveText(terms[0].questions[0].explanation);
+  await expect(page.locator('.answer-feedback p')).toContainText(
+    englishTerms.lichun.questions[0].explanation,
+  );
+  await expect(page.locator('.answer-feedback p .text-translation')).toHaveText(
+    terms[0].questions[0].explanation,
+  );
   await page.getByRole('button', { name: '中文', exact: true }).click();
   await expect(page.locator('[data-answer="1"]')).toBeDisabled();
   await expect(page.locator('.answer-feedback')).toContainText('答对了');
@@ -106,6 +149,9 @@ export async function checkBilingual(page, url) {
   await page.keyboard.press('Escape');
 
   await page.goto(`${url}#jingzhe`);
+  await page.locator('.description .text-language-toggle').click();
+  await page.locator('h1 .text-language-toggle').click();
+  await page.evaluate(() => window.scrollTo({ top: 0, behavior: 'instant' }));
   await page.screenshot({ path: 'output/review/bilingual-desktop.png', fullPage: true });
   for (const width of [390, 320]) {
     await page.setViewportSize({ width, height: 844 });
@@ -114,7 +160,22 @@ export async function checkBilingual(page, url) {
       true,
     );
   }
+  await page.evaluate(() => window.scrollTo({ top: 0, behavior: 'instant' }));
   await page.screenshot({ path: 'output/review/bilingual-mobile.png', fullPage: true });
+  await page.getByRole('button', { name: '中文', exact: true }).click();
+  await page.locator('.description .text-language-toggle').click();
+  await expect(page.locator('.description')).toContainText(
+    terms.find((term) => term.id === 'jingzhe').description,
+  );
+  await expect(page.locator('.description .text-translation')).toHaveText(
+    englishTerms.jingzhe.description,
+  );
+  expect(await page.evaluate(() => document.documentElement.scrollWidth <= innerWidth + 1)).toBe(
+    true,
+  );
+  await page.evaluate(() => window.scrollTo({ top: 0, behavior: 'instant' }));
+  await page.screenshot({ path: 'output/review/translation-mobile.png', fullPage: true });
+  await page.getByRole('button', { name: 'English', exact: true }).click();
   const downloading = page.waitForEvent('download');
   await page.locator('[data-action="download"]').click();
   const download = await downloading;
