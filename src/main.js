@@ -31,6 +31,9 @@ import {
   recordActivity,
   PROGRESS_KEY,
 } from './core.js';
+import { englishTerms } from './data.en.js';
+import { createLanguageState, translate } from './language.js';
+import { createLocalizer } from './localize.js';
 import './style.css';
 
 const icons = {
@@ -91,6 +94,8 @@ try {
 } catch {
   /* Progress still works in memory when file storage is blocked. */
 }
+const language = createLanguageState(storage);
+const localizer = createLocalizer(language);
 let progress = loadProgress(storage);
 let quiz = { index: 0, answers: [], done: false };
 let puzzle = { tiles: shuffledTiles(), selected: null, moves: 0, peek: false };
@@ -105,12 +110,22 @@ const dateLabel = (term) => {
   return `${date.slice(5, 7)}.${date.slice(8, 10)}`;
 };
 const longDate = (term) => `${year} 年 ${dateLabel(term).replace('.', ' 月 ')} 日`;
-const refreshIcons = () =>
+function applyLanguage() {
+  document.documentElement.lang = language.global === 'en' ? 'en' : 'zh-CN';
+  localizer.apply(document.body, `${view}:${selected.id}`);
+  document.title = translate(
+    `${view === 'home' ? selected.name : view === 'atlas' ? '节气图鉴' : '我的印记'} · 岁时`,
+    language.global,
+  );
+}
+const refreshIcons = () => {
   createIcons({ icons, attrs: { 'stroke-width': 1.5, 'aria-hidden': 'true' } });
+  applyLanguage();
+};
 
 function notify(message) {
   const toast = document.querySelector('#toast');
-  toast.textContent = message;
+  toast.textContent = translate(message, language.global);
   toast.classList.add('visible');
   clearTimeout(toastTimer);
   toastTimer = setTimeout(() => toast.classList.remove('visible'), 3500);
@@ -170,7 +185,8 @@ function render() {
             )
             .join('')}
         </nav>
-        <button class="today-button" data-action="today">${icon('Sun')}<span>此刻 · ${now.name}</span></button>
+        <div class="header-actions"><div class="language-switch" role="group" aria-label="页面语言 / Page language"><button type="button" data-language="zh" lang="zh-CN" aria-label="中文">中</button><span aria-hidden="true">/</span><button type="button" data-language="en" lang="en" aria-label="English">EN</button></div>
+        <button class="today-button" data-action="today">${icon('Sun')}<span>此刻 · ${now.name}</span></button></div>
       </div>
     </header>
     <main id="main" tabindex="-1">${view === 'home' ? renderHome() : view === 'atlas' ? renderAtlas() : renderCollection()}</main>
@@ -247,7 +263,7 @@ function renderQuiz() {
   const question = selected.questions[quiz.index];
   const answer = quiz.answers[quiz.index];
   const answered = answer !== undefined;
-  return `<div class="quiz-layout"><div class="quiz-intro"><div class="eyebrow">草木有问 · ${selected.name}</div><h3>你知时节几许？</h3><div class="quiz-counter"><b>${two(quiz.index + 1)}</b><span>/ 03</span></div><div class="quiz-dots">${selected.questions.map((_, i) => `<span class="${i <= quiz.index ? 'filled' : ''}"></span>`).join('')}</div></div><div class="quiz-question"><h4 tabindex="-1">${question.question}</h4><div class="quiz-options">${question.options.map((option, i) => `<button class="quiz-option ${answered && i === question.answer ? 'correct' : ''} ${answered && i === answer && i !== question.answer ? 'incorrect' : ''}" data-answer="${i}" ${answered ? 'disabled' : ''}><span class="option-letter">${['A', 'B', 'C'][i]}</span><span>${option}</span>${answered && i === question.answer ? icon('Check') : answered && i === answer ? icon('X') : ''}</button>`).join('')}</div><div class="answer-feedback" role="status">${answered ? `<strong>${answer === question.answer ? '答对了' : `再记住一点：答案是 ${['A', 'B', 'C'][question.answer]}`}</strong><p>${question.explanation}</p>` : ''}</div><button class="primary-button next-question" data-action="next-question" ${answered ? '' : 'disabled'}>${quiz.index === 2 ? '查看结果' : '下一题'}${icon('ArrowRight')}</button></div></div>`;
+  return `<div class="quiz-layout"><div class="quiz-intro"><div class="eyebrow">草木有问 · ${selected.name}</div><h3>你知时节几许？</h3><div class="quiz-counter"><b>${two(quiz.index + 1)}</b><span>/ 03</span></div><div class="quiz-dots">${selected.questions.map((_, i) => `<span class="${i <= quiz.index ? 'filled' : ''}"></span>`).join('')}</div></div><div class="quiz-question"><h4 tabindex="-1">${question.question}</h4><div class="quiz-options">${question.options.map((option, i) => `<div class="quiz-option-row"><button class="quiz-option ${answered && i === question.answer ? 'correct' : ''} ${answered && i === answer && i !== question.answer ? 'incorrect' : ''}" data-answer="${i}" ${answered ? 'disabled' : ''}><span class="option-letter">${['A', 'B', 'C'][i]}</span><span class="quiz-option-label">${option}</span>${answered && i === question.answer ? icon('Check') : answered && i === answer ? icon('X') : ''}</button></div>`).join('')}</div><div class="answer-feedback" role="status">${answered ? `<strong>${answer === question.answer ? '答对了' : `再记住一点：答案是 ${['A', 'B', 'C'][question.answer]}`}</strong><p>${question.explanation}</p>` : ''}</div><button class="primary-button next-question" data-action="next-question" ${answered ? '' : 'disabled'}>${quiz.index === 2 ? '查看结果' : '下一题'}${icon('ArrowRight')}</button></div></div>`;
 }
 
 function renderPuzzle() {
@@ -263,7 +279,11 @@ function renderAtlasResults() {
   const filtered = terms.filter(
     (t) =>
       (seasonFilter === 'all' || t.season === seasonFilter) &&
-      `${t.name}${t.pinyin}${t.motifs.join('')}${t.custom}${t.description}`
+      `${t.name}${t.pinyin}${t.motifs.join('')}${t.custom}${t.description} ${Object.values(
+        englishTerms[t.id],
+      )
+        .filter((v) => typeof v === 'string')
+        .join(' ')} ${englishTerms[t.id].motifs.join(' ')}`
         .toLowerCase()
         .includes(search.trim().toLowerCase()),
   );
@@ -335,6 +355,8 @@ async function downloadPostcard() {
     return;
   }
   const term = selected;
+  const exportLanguage = language.global;
+  const text = (value) => translate(value, exportLanguage);
   const button = document.querySelector('[data-action="download"]');
   button.disabled = true;
   try {
@@ -349,23 +371,35 @@ async function downloadPostcard() {
     ctx.fillRect(0, 0, 1200, 1500);
     ctx.drawImage(art, 0, 0, 1200, 800);
     ctx.fillStyle = '#263e34';
-    ctx.font = '104px "Songti SC", SimSun, serif';
-    ctx.fillText(term.name, 90, 970);
+    ctx.font = `${exportLanguage === 'en' ? 64 : 104}px "Songti SC", SimSun, serif`;
+    ctx.fillText(text(term.name), 90, 970, 1020);
     ctx.fillStyle = '#69766c';
     ctx.font = '26px serif';
-    ctx.fillText(`${term.pinyin}   /   ${longDate(term)}`, 94, 1028);
+    ctx.fillText(`${term.pinyin}   /   ${text(longDate(term))}`, 94, 1028);
     ctx.fillStyle = '#344c40';
     ctx.font = '36px "Songti SC", serif';
-    ctx.fillText(term.tagline, 94, 1115);
+    ctx.fillText(text(term.tagline), 94, 1115, 1012);
     ctx.fillStyle = '#59635d';
     ctx.font = '25px "Songti SC", serif';
-    const chars = [...term.description];
-    for (let offset = 0, line = 0; offset < chars.length; line += 1) {
-      let end = Math.min(offset + 38, chars.length);
-      while (/^[，。！？；：、）》」』】]$/.test(chars[end] || '')) end += 1;
-      ctx.fillText(chars.slice(offset, end).join(''), 94, 1188 + line * 42);
-      offset = end;
+    const units =
+      exportLanguage === 'en' ? text(term.description).split(' ') : [...term.description];
+    const separator = exportLanguage === 'en' ? ' ' : '';
+    const lines = [];
+    let line = '';
+    for (const unit of units) {
+      const next = line ? `${line}${separator}${unit}` : unit;
+      if (
+        line &&
+        ctx.measureText(next).width > 1012 &&
+        !/^[，。！？；：、）》」』】]$/.test(unit)
+      ) {
+        lines.push(line);
+        line = unit;
+      } else line = next;
     }
+    if (line) lines.push(line);
+    const lineHeight = Math.min(42, 170 / Math.max(lines.length, 1));
+    lines.forEach((line, i) => ctx.fillText(line, 94, 1188 + i * lineHeight));
     ctx.strokeStyle = '#bdc8bf';
     ctx.beginPath();
     ctx.moveTo(94, 1380);
@@ -373,7 +407,7 @@ async function downloadPostcard() {
     ctx.stroke();
     ctx.fillStyle = '#ab4d3b';
     ctx.font = '28px "Songti SC", serif';
-    ctx.fillText('岁时 · 二十四节气', 94, 1436);
+    ctx.fillText(text('岁时 · 二十四节气'), 94, 1436);
     ctx.fillStyle = '#68726a';
     ctx.font = '22px serif';
     ctx.fillText(`${two(term.index + 1)} / 24`, 1012, 1436);
@@ -382,7 +416,7 @@ async function downloadPostcard() {
     const url = URL.createObjectURL(blob);
     const link = document.createElement('a');
     link.href = url;
-    link.download = `岁时-${term.name}-${year}.png`;
+    link.download = `${text('岁时')}-${text(term.name)}-${year}.png`;
     link.click();
     setTimeout(() => URL.revokeObjectURL(url), 30000);
     notify(`「${term.name}」明信片已生成`);
@@ -396,6 +430,13 @@ async function downloadPostcard() {
 document.addEventListener('click', (event) => {
   const button = event.target.closest('button, a[data-action]');
   if (!button || button.disabled) return;
+  if (button.dataset.language || button.dataset.localLanguage) {
+    event.preventDefault();
+    if (button.dataset.language) language.setGlobal(button.dataset.language);
+    else language.toggle(button.dataset.localLanguage);
+    applyLanguage();
+    return;
+  }
   if (button.dataset.view) {
     view = button.dataset.view;
     if (view === 'atlas') seasonFilter = 'all';

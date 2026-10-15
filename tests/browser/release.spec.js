@@ -114,3 +114,11 @@ test('every term resolves its online image after hash navigation and page reload
   await expect(page.locator('.hero-art')).toHaveJSProperty('naturalWidth', 1440);
   expect(failures).toEqual([]);
 });
+
+test('online bilingual content and independent text controls preserve activities', async ({
+  page,
+}) => {
+  test.setTimeout(90000);
+  const { checkBilingual } = await import('./helpers/bilingual.js');
+  await checkBilingual(page, siteURL);
+});

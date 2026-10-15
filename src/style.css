@@ -1882,3 +1882,218 @@ noscript {
     animation: none !important;
   }
 }
+
+/* Language tools stay beside the text without interrupting the seasonal artwork. */
+.header-actions {
+  display: flex;
+  align-items: center;
+  gap: 22px;
+  flex-shrink: 0;
+}
+.language-switch {
+  display: inline-flex;
+  align-items: center;
+  gap: 3px;
+  border: 1px solid var(--line);
+  border-radius: 20px;
+  padding: 3px 6px;
+}
+.language-switch button {
+  min-width: 31px;
+  min-height: 30px;
+  border-radius: 16px;
+  font:
+    12px/1.2 system-ui,
+    sans-serif;
+  color: var(--muted);
+}
+.language-switch button[aria-pressed='true'] {
+  background: var(--ink);
+  color: #fff;
+}
+.language-switch > span {
+  color: #a4ada2;
+  font-size: 11px;
+}
+.text-language-toggle {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  min-width: 32px;
+  min-height: 28px;
+  padding: 4px 6px;
+  margin-left: 8px;
+  vertical-align: middle;
+  border: 1px solid #cbd5c9;
+  border-radius: 5px;
+  background: #fafbf8e6;
+  color: #526b59;
+  font:
+    10px/1 system-ui,
+    sans-serif;
+  letter-spacing: 0;
+  white-space: nowrap;
+}
+.text-language-toggle::after {
+  content: attr(data-label);
+}
+.text-language-toggle:hover {
+  border-color: var(--season);
+  background: #edf2e9;
+}
+.text-language-toggle:focus-visible,
+.language-switch button:focus-visible {
+  outline: 2px solid var(--season);
+  outline-offset: 3px;
+}
+.quiz-option-row {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+.quiz-option-row > .quiz-option {
+  flex: 1;
+  min-width: 0;
+}
+.quiz-option-row > .text-language-toggle {
+  flex-shrink: 0;
+  margin: 0;
+}
+[data-language-key][lang='en'] {
+  letter-spacing: normal;
+  overflow-wrap: break-word;
+}
+.hero h1[lang='en'] {
+  font-size: 49px;
+  line-height: 1.08;
+  font-weight: 500;
+}
+.hero h1[lang='en'] .text-language-toggle {
+  vertical-align: baseline;
+}
+.hero-tagline[lang='en'] {
+  font-size: 18px;
+  line-height: 1.6;
+}
+html[lang='en'] .hero-aside {
+  display: none;
+}
+html[lang='en'] .header-inner {
+  gap: 20px;
+}
+html[lang='en'] .header-inner nav {
+  gap: 24px;
+}
+html[lang='en'] .term-caption {
+  align-items: flex-start;
+  flex-direction: column;
+}
+html[lang='en'] .term-caption h3 {
+  font-size: 17px;
+  line-height: 1.25;
+}
+html[lang='en'] .term-subtitle {
+  line-height: 1.5;
+}
+html[lang='en'] .seal-mini-status {
+  font-size: 9px;
+}
+html[lang='en'] .hero .eyebrow {
+  letter-spacing: 1px;
+}
+html[lang='en'] .hero-number {
+  margin-left: 0;
+}
+html[lang='en'] .detail-title-wrap {
+  min-width: 0;
+}
+.detail-title-wrap h2[lang='en'] {
+  font-size: 24px;
+  line-height: 1.45;
+}
+html[lang='en'] .seal-season {
+  grid-template-columns: 100px 1fr;
+}
+@media (max-width: 1100px) {
+  .header-actions {
+    gap: 10px;
+  }
+  .today-button span {
+    display: none;
+  }
+}
+@media (max-width: 760px) {
+  .header-actions {
+    grid-column: 2;
+    grid-row: 1;
+  }
+  .header-actions .today-button {
+    display: none;
+  }
+  .hero-copy {
+    max-width: 100%;
+  }
+  .hero h1[lang='en'] {
+    font-size: 38px;
+  }
+  .hero-tagline[lang='en'] {
+    font-size: 16px;
+  }
+  .hero h1 {
+    min-width: 0;
+  }
+  .vertical-seal {
+    flex-shrink: 0;
+  }
+  html[lang='en'] .header-inner nav {
+    gap: 24px;
+  }
+  html[lang='en'] .season-tabs {
+    flex-wrap: wrap;
+  }
+  html[lang='en'] .term-caption h3 {
+    font-size: 14px;
+  }
+  .detail-title-wrap h2[lang='en'] {
+    font-size: 19px;
+  }
+  html[lang='en'] .seal-season {
+    grid-template-columns: 1fr;
+  }
+  html[lang='en'] .activity-tabs {
+    gap: 15px;
+  }
+  html[lang='en'] .activity-progress {
+    font-size: 9px;
+  }
+  html[lang='en'] .site-footer {
+    gap: 16px;
+  }
+  html[lang='en'] .footer-brand span {
+    font-size: 9px;
+  }
+  .text-language-toggle {
+    min-height: 30px;
+  }
+}
+@media (max-width: 360px) {
+  .hero h1[lang='en'] {
+    font-size: 34px;
+  }
+  html[lang='en'] .header-inner nav {
+    gap: 20px;
+  }
+  html[lang='en'] .hero .eyebrow {
+    font-size: 9px;
+    gap: 5px;
+  }
+  html[lang='en'] .hero .tiny-line {
+    width: 15px;
+  }
+}
+.description[lang='en'] {
+  text-align: left;
+}
+html[lang='en'] .term-card {
+  align-self: start;
+}
